@@ -2,8 +2,6 @@
 
 ## ToDo
 
-- Add support for Opera
-
 ## Contributing
 
 1. Fork it

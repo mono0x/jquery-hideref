@@ -35,6 +35,13 @@
         });
       };
     }
+    else if ($.browser.opera) {
+      return function() {
+        return $(this).each(function() {
+          $(this).attr('href', 'https://www.google.com/url?q=' + encodeURIComponent(this.href));
+        });
+      };
+    }
     return function() {
       return $(this).each(function() {
         var html = [
