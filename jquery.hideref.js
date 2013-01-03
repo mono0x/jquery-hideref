@@ -22,21 +22,46 @@
 
 (function($) {
   $.fn.hideref = (function() {
+    var refreshPage = function(href) {
+      return [
+        '<html><head><script type="text/javascript"><!--\n',
+        'document.write(\'<meta http-equiv="refresh" content="0;url=', href, '">\');',
+        '// --><', '/script></head><body></body></html>'
+      ].join('');
+    };
+
     if ($.browser.webkit) {
       return function() {
         return $(this).each(function() {
-          var rel = $(this).attr('rel');
-          if (!(rel && /noreferrer/.test(rel))) {
-            return $(this).attr('rel', rel + ' noreferrer');
+          var attr = $(this).attr('rel');
+          if (!/noreferrer/.test(attr)) {
+            return $(this).attr('rel', attr + ' noreferrer');
           }
         });
       };
     }
     else if ($.browser.msie) {
       return function() {
-        return $(this).click(function() {
-          window.open($(this).attr('href'));
-          return false;
+        return $(this).each(function() {
+          var href = this.href;
+
+          $(this).attr('href', 'javascript:void(0)').click(function(e) {
+            var target = $(this).attr('target') || '_self';
+            var doc = document;
+            if (e.which == 2) {
+              window.open(href).opener.parent.focus();
+              middle = false;
+            }
+            else if (target == '_self') {
+              doc.clear();
+              doc.write(refreshPage(href));
+              doc.close();
+            }
+            else {
+              window.open(href, target);
+            }
+            return false;
+          });
         });
       };
     }
@@ -49,12 +74,7 @@
     }
     return function() {
       return $(this).each(function() {
-        var html = [
-          '<html><head><script type="text/javascript"><!--\n',
-          'document.write(\'<meta http-equiv="refresh" content="0;url=', this.href, '">\');',
-          '// --><', '/script></head><body></body></html>'
-        ].join('');
-        $(this).attr('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(html));
+        $(this).attr('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(refreshPage(this.href)));
       });
     };
   })();
