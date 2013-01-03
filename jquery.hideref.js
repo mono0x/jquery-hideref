@@ -33,10 +33,13 @@
     if ($.browser.webkit) {
       return function() {
         return $(this).each(function() {
-          var attr = $(this).attr('rel');
-          if (!/noreferrer/.test(attr)) {
-            return $(this).attr('rel', attr + ' noreferrer');
+          var rel = $(this).attr('rel');
+          var rels = rel ? rel.split(/\s+/) : [];
+          if (!rels.some(function() { return rels == 'noreferrer'; })) {
+            rels.push('noreferrer');
+            return $(this).attr('rel', rels.join(' '));
           }
+          return $(this);
         });
       };
     }
