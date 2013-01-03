@@ -53,7 +53,6 @@
             var doc = document;
             if (e.which == 2) {
               window.open(href).opener.parent.focus();
-              middle = false;
             }
             else if (target == '_self') {
               doc.clear();
