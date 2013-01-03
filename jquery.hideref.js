@@ -45,7 +45,10 @@
         return $(this).each(function() {
           var href = this.href;
 
-          $(this).attr('href', 'javascript:void(0)').click(function(e) {
+          $(this).attr({
+            href: 'javascript:void(0)',
+            title: href
+          }).click(function(e) {
             var target = $(this).attr('target') || '_self';
             var doc = document;
             if (e.which == 2) {
@@ -68,13 +71,19 @@
     else if ($.browser.opera) {
       return function() {
         return $(this).each(function() {
-          $(this).attr('href', 'https://www.google.com/url?q=' + encodeURIComponent(this.href));
+          $(this).attr({
+            href: 'https://www.google.com/url?q=' + encodeURIComponent(this.href),
+            title: this.href
+          });
         });
       };
     }
     return function() {
       return $(this).each(function() {
-        $(this).attr('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(refreshPage(this.href)));
+        $(this).attr({
+          href: 'data:text/html;charset=utf-8,' + encodeURIComponent(refreshPage(this.href)),
+          title: this.href
+        });
       });
     };
   })();
