@@ -24,7 +24,12 @@
   $.fn.hideref = (function() {
     if ($.browser.webkit) {
       return function() {
-        return $(this).attr('rel', 'noreferrer');
+        return $(this).each(function() {
+          var rel = $(this).attr('rel');
+          if (!(rel && /noreferrer/.test(rel))) {
+            return $(this).attr('rel', rel + ' noreferrer');
+          }
+        });
       };
     }
     else if ($.browser.msie) {
